@@ -21,14 +21,16 @@ public class LancerMLP {
         double[][] inputs_ou = {{0,0},{0,1},{1,0},{1,1}};
         double[][] outputs_ou = {{0},{1},{1},{1}};//OU
 
+        double[][] inputs =inputs_xor;
+        double[][] outputs =outputs_xor;
         for (int i = 0; i < 10000; i++) {
             int j = i%4;
-            mlp.backPropagate(inputs_xor[j],outputs_xor[j]);
+            mlp.backPropagate(inputs[j],outputs[j]);
         }
-        Arrays.stream(mlp.execute(inputs_xor[0])).forEach(System.out::println);
-        Arrays.stream(mlp.execute(inputs_xor[1])).forEach(System.out::println);
-        Arrays.stream(mlp.execute(inputs_xor[2])).forEach(System.out::println);
-        Arrays.stream(mlp.execute(inputs_xor[3])).forEach(System.out::println);
+        Arrays.stream(mlp.execute(inputs[0])).forEach(System.out::println);
+        Arrays.stream(mlp.execute(inputs[1])).forEach(System.out::println);
+        Arrays.stream(mlp.execute(inputs[2])).forEach(System.out::println);
+        Arrays.stream(mlp.execute(inputs[3])).forEach(System.out::println);
 
 
 
