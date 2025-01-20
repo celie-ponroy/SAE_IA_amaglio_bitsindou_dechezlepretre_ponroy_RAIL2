@@ -10,9 +10,7 @@ public class MainKNN {
         Etiquette[] etiquettes = Etiquette.charger("doc/baque_images/train-labels.idx1-ubyte");
         Donnees d = new Donnees(img);
 
-        //Imagette[] imgNoTrain = Imagette.charger("doc/baque_images/t10k-images.idx3-ubyte");
-        //Etiquette[] etiquettesNoTrain = Etiquette.charger("doc/baque_images/t10k-labels.idx1-ubyte");
-        //Donnees dTest = new Donnees(imgNoTrain);
+        
 
         System.out.println("Etiquettage des imagettes...");
         d.etiquetter(etiquettes);
