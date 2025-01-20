@@ -63,7 +63,7 @@ public class Imagette {
         for(int i = 0; i < nbImg; i++) {
             for (int colonnes = 0; colonnes < nbColonnes; colonnes++) {
                 for (int lignes = 0; lignes < nbLignes; lignes++) {
-                    img[colonnes][lignes] = (dis.readUnsignedByte()-127.5)/127.5;
+                    img[colonnes][lignes] = dis.readUnsignedByte()/255;
                 }
             }
             imagettes[i] = (new Imagette(typeFichier, nbLignes, nbColonnes, img));
