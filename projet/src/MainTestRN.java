@@ -6,7 +6,7 @@ public class MainTestRN {
         Etiquette[] etiquettesNoTrain = Etiquette.charger("doc/baque_images/t10k-labels.idx1-ubyte");
         Donnees dTest = new Donnees(imgNoTrain);
         dTest.etiquetter(etiquettesNoTrain);
-        MLP mlp = MLP.charge("doc/res/128_64_tan");
+        MLP mlp = MLP.charge(args[0]);
         int nbImgBonnes = 0;
         for(Imagette img : imgNoTrain){
             double[] entrees = MainKNN.applatissement(img.getNiveauGris());
@@ -15,6 +15,7 @@ public class MainTestRN {
             afficherTab(sortie);
             System.out.println("etiquette : "+img.getEtiquette().getEtiquette());
             if(img.getEtiquette().getEtiquette() == getIndiceMax(sortie)){
+                System.out.println("trouvé !");
                 nbImgBonnes++;
             }
         }
