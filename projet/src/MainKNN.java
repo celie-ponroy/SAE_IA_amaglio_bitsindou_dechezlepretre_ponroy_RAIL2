@@ -54,11 +54,7 @@ public class MainKNN {
             erreurMoyEntrainement = erreurMoyEntrainement / (img.length * 5);
             erreurs.add(erreurMoyEntrainement);
         }
-
-        System.out.println("Erreur de moy Avant entrainement : " + erreurs.get(0));
-        System.out.println("Erreur de moy Apres 5 entrainement : " + erreurs.get(1));
-        System.out.println("Erreur de moy Apres 10 entrainement : " + erreurs.get(2));
-        System.out.println("Erreur de moy Apres 10 entrainement : " + erreurs.get(3));
+        Courbe.genererGraphique(new int[]{0,5,10,15},new double[]{erreurs.get(0),erreurs.get(1),erreurs.get(2),erreurs.get(3)},"erreur_128_64_0.03_sig");
         mlp.sauve("doc/res/128_64_0.03_sig");
     }
 
