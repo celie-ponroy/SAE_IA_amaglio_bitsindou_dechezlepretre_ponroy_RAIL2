@@ -8,6 +8,6 @@ public class TanH implements TransferFunction, Serializable {
 
     @Override
     public double evaluateDer(double value) {
-        return 1 - this.evaluate(value)*this.evaluate(value);
+        return 1 - value * value;
     }
 }
