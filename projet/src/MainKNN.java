@@ -21,7 +21,7 @@ public class MainKNN {
 
         MLP mlp = new MLP(new int[]{tailleInput, 128, 64, 10}, 0.03, new Sigmoide());
         double erreurMoy = 0;
-
+        ArrayList<Double> erreurs = new ArrayList<>();
         for (Imagette imagette : img) {
             double[] entrees = applatissement(imagette.getNiveauGris());
             double[] sortieVoulu = new double[10];
@@ -37,23 +37,28 @@ public class MainKNN {
             error = error / sortieVoulu.length;
             erreurMoy += error;
         }
+        erreurMoy = erreurMoy / img.length;
+        erreurs.add(erreurMoy);
 
-        erreurMoy = erreurMoy/ img.length;
-
-
-        double erreurMoyEntrainement = 0;
-        for (int i = 0; i < 10; i++) {
-            System.out.println("It en cour : "+i);
-            for (Imagette imagette : img) {
-                double[] entrees = applatissement(imagette.getNiveauGris());
-                double[] sortieVoulu = new double[10];
-                sortieVoulu[imagette.getEtiquette().getEtiquette()] = 1.0;
-                erreurMoyEntrainement += mlp.backPropagate(entrees, sortieVoulu);
+        for (int j = 0; j < 3; j++) {
+            double erreurMoyEntrainement = 0;
+            for (int i = 0; i < 5; i++) {
+                System.out.println("It en cour : " + i);
+                for (Imagette imagette : img) {
+                    double[] entrees = applatissement(imagette.getNiveauGris());
+                    double[] sortieVoulu = new double[10];
+                    sortieVoulu[imagette.getEtiquette().getEtiquette()] = 1.0;
+                    erreurMoyEntrainement += mlp.backPropagate(entrees, sortieVoulu);
+                }
             }
+            erreurMoyEntrainement = erreurMoyEntrainement / (img.length * 5);
+            erreurs.add(erreurMoyEntrainement);
         }
-        erreurMoyEntrainement = erreurMoyEntrainement/ (img.length*10);
-        System.out.println("Erreur de moy Avant entrainement : " + erreurMoy);
-        System.out.println("Erreur de moy Apres entrainement : " + erreurMoyEntrainement);
+
+        System.out.println("Erreur de moy Avant entrainement : " + erreurs.get(0));
+        System.out.println("Erreur de moy Apres 5 entrainement : " + erreurs.get(1));
+        System.out.println("Erreur de moy Apres 10 entrainement : " + erreurs.get(2));
+        System.out.println("Erreur de moy Apres 10 entrainement : " + erreurs.get(3));
         mlp.sauve("doc/res/128_64_0.03_sig");
     }
 
