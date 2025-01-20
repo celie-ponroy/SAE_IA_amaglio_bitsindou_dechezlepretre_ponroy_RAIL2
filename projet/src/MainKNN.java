@@ -19,18 +19,18 @@ public class MainKNN {
         //dTest.etiquetter(etiquettesNoTrain);
         int tailleInput = img[0].getNiveauGris().length * img[0].getNiveauGris()[0].length;
 
-        MLP mlp = new MLP(new int[]{tailleInput, 100, 75, 50, 10}, 0.03, new Sigmoide());
+        MLP mlp = new MLP(new int[]{tailleInput, 128, 64, 10}, 0.03, new TanH());
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             System.out.println("It en cour : "+i);
             for (Imagette imagette : img) {
                 double[] entrees = applatissement(imagette.getNiveauGris());
                 double[] sortieVoulu = new double[10];
                 sortieVoulu[imagette.getEtiquette().getEtiquette()] = 1.0;
-                mlp.backPropagate(entrees, sortieVoulu);
+                System.out.println(mlp.backPropagate(entrees, sortieVoulu));
             }
         }
-        mlp.sauve("res/100_75_50");
+        mlp.sauve("doc/res/128_64");
     }
 
     public static double[] applatissement(double[][] tab) {

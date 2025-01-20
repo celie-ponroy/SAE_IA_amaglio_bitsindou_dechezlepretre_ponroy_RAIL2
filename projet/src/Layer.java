@@ -1,4 +1,6 @@
-class Layer {
+import java.io.Serializable;
+
+class Layer implements Serializable {
     public Neuron Neurons[];
     public int 	  Length;
 

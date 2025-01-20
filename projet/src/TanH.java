@@ -1,4 +1,6 @@
-public class TanH implements TransferFunction{
+import java.io.Serializable;
+
+public class TanH implements TransferFunction, Serializable {
     @Override
     public double evaluate(double value) {
         return Math.tanh(value);
