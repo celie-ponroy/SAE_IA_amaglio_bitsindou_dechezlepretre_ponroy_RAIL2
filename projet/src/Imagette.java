@@ -8,14 +8,14 @@ public class Imagette {
     private int width;
     private int height;
     private double distance;
-    private int[][] niveauGris;
+    private double[][] niveauGris;
     private Etiquette etiquette;
 
-    public Imagette(int[][] niveauGris) {
+    public Imagette(double[][] niveauGris) {
         this.niveauGris = niveauGris;
     }
 
-    public Imagette(int type, int width, int height, int[][] niveauGris) {
+    public Imagette(int type, int width, int height, double[][] niveauGris) {
         this.type = type;
         this.width = width;
         this.height = height;
@@ -30,7 +30,7 @@ public class Imagette {
         this.distance = distance;
     }
 
-    public int[][] getNiveauGris() {
+    public double[][] getNiveauGris() {
         return niveauGris;
     }
 
@@ -50,17 +50,6 @@ public class Imagette {
         this.etiquette = etiquette;
     }
 
-    public void save(String nom) throws IOException {
-        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        for (int colonnes = 0; colonnes < this.height; colonnes++) {
-            for (int lignes = 0; lignes < this.width; lignes++) {
-                bi.setRGB(lignes, colonnes, getColorGrayIntFromRGB(niveauGris[colonnes][lignes]));
-            }
-        }
-        File file = new File("image/"+nom);
-        ImageIO.write(bi, "PNG", file);
-    }
-
     public static Imagette[] charger(String nom) throws IOException {
         DataInputStream dis = new DataInputStream(new FileInputStream(nom));
         int typeFichier = dis.readInt();
@@ -68,18 +57,18 @@ public class Imagette {
         int nbLignes = dis.readInt();
         int nbColonnes = dis.readInt();
         int tailleImg = nbColonnes*nbLignes;
-        int[][] img = new int[nbColonnes][nbLignes];
+        double[][] img = new double[nbColonnes][nbLignes];
         Imagette[] imagettes = new Imagette[nbImg];
         System.out.println(typeFichier+" "+nbImg+" "+nbLignes+" "+nbColonnes);
         for(int i = 0; i < nbImg; i++) {
             for (int colonnes = 0; colonnes < nbColonnes; colonnes++) {
                 for (int lignes = 0; lignes < nbLignes; lignes++) {
-                    img[colonnes][lignes] = dis.readUnsignedByte();
+                    img[colonnes][lignes] = dis.readUnsignedByte()/255;
                 }
             }
             imagettes[i] = (new Imagette(typeFichier, nbLignes, nbColonnes, img));
             System.out.println(i);
-            img = new int[nbColonnes][nbLignes];
+            img = new double[nbColonnes][nbLignes];
         }
         return imagettes;
     }
