@@ -10,11 +10,13 @@ public class MainKNN {
         Etiquette[] etiquettes = Etiquette.charger("doc/baque_images/train-labels.idx1-ubyte");
         Donnees d = new Donnees(img);
 
-        
+        Imagette[] imgTest = Imagette.charger("doc/baque_images/train-images.idx3-ubyte");
+        Etiquette[] etiquettestest = Etiquette.charger("doc/baque_images/train-labels.idx1-ubyte");
+        Donnees dTest = new Donnees(img);
 
-        System.out.println("Etiquettage des imagettes...");
         d.etiquetter(etiquettes);
         //dTest.etiquetter(etiquettesNoTrain);
+
         int tailleInput = img[0].getNiveauGris().length * img[0].getNiveauGris()[0].length;
 
         MLP mlp = new MLP(new int[]{tailleInput, 128, 64, 10}, 0.03, new Sigmoide());
@@ -52,7 +54,7 @@ public class MainKNN {
             erreurMoyEntrainement = erreurMoyEntrainement / (img.length * 5);
             erreurs.add(erreurMoyEntrainement);
         }
-        Courbe.genererGraphique(new int[]{0,5,10,15},new double[]{erreurs.get(0),erreurs.get(1),erreurs.get(2),erreurs.get(3)},"erreur_128_64_0.03_sig");
+        Courbe.genererGraphique(new int[]{0, 5, 10, 15}, new double[]{erreurs.get(0), erreurs.get(1), erreurs.get(2), erreurs.get(3)}, "erreur_128_64_0.03_sig");
         mlp.sauve("doc/res/128_64_0.03_sig");
     }
 

@@ -24,7 +24,7 @@ public class Courbe {
 
         // Création du graphique
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Erreur de sortie vs Itérations", // Titre du graphique
+                "Erreur de sortie en fonction des Itérations", // Titre du graphique
                 "Itérations",                    // Label de l'axe X
                 "Erreur",                        // Label de l'axe Y
                 dataset,                         // Données
@@ -38,7 +38,7 @@ public class Courbe {
         try {
             File imageFile = new File("doc/courbes/" + name + ".png");
             ChartUtils.saveChartAsPNG(imageFile, chart, 800, 600);
-            System.out.println("Graphique sauvegardé sous 'doc/courbes/\"" + name + "\".png.png'");
+            System.out.println("Graphique sauvegardé sous 'doc/courbes/\"" + name + "\".png'");
         } catch (IOException e) {
             System.err.println("Erreur lors de la sauvegarde du graphique : " + e.getMessage());
         }
