@@ -20,15 +20,9 @@ public class StatsRN {
         }
         System.out.println();
     }
-
-    public static double testerReseauNeurone(MLP mlp) throws IOException {
-        Imagette[] imgNoTrain = Imagette.charger("doc/baque_images/t10k-images.idx3-ubyte");
-        Etiquette[] etiquettesNoTrain = Etiquette.charger("doc/baque_images/t10k-labels.idx1-ubyte");
-        Donnees dTest = new Donnees(imgNoTrain);
-        dTest.etiquetter(etiquettesNoTrain);
-
+    public static double testerReseauNeurone(MLP mlp, Imagette[] imagettes) throws IOException {
         int nbImgBonnes = 0;
-        for(Imagette img : imgNoTrain){
+        for(Imagette img : imagettes){
             double[] entrees = MainKNN.applatissement(img.getNiveauGris());
             double[] sortie = mlp.execute(entrees);
             //System.out.println("sortie :");
@@ -39,7 +33,7 @@ public class StatsRN {
                 nbImgBonnes++;
             }
         }
-        System.out.println("Nombre d'imagette trouvées : "+nbImgBonnes+"/"+imgNoTrain.length);
-        return (nbImgBonnes*100)/imgNoTrain.length;
+        System.out.println("Nombre d'imagette trouvées : "+nbImgBonnes+"/"+imagettes.length);
+        return (nbImgBonnes*100)/imagettes.length;
     }
 }
