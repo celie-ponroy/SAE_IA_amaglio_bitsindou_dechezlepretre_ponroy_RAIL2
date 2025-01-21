@@ -1,8 +1,6 @@
 import java.io.IOException;
 
 public class StatsRN {
-    public static void main(String[] args) throws IOException {
-    }
 
     public static int getIndiceMax(double[] tab){
         double max = Double.NEGATIVE_INFINITY;
@@ -28,7 +26,7 @@ public class StatsRN {
             double[] entrees = MainKNN.applatissement(img.getNiveauGris());
             double[] sortie = mlp.execute(entrees);
             //System.out.println("sortie :");
-            afficherTab(sortie);
+            //afficherTab(sortie);
             //System.out.println("etiquette : "+img.getEtiquette().getEtiquette());
             if(img.getEtiquette().getEtiquette() == getIndiceMax(sortie)){
                 //System.out.println("trouvé !");

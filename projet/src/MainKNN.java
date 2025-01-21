@@ -9,17 +9,30 @@ public class MainKNN {
         Imagette[] img = Imagette.charger("doc/baque_images/train-images.idx3-ubyte");
         Etiquette[] etiquettes = Etiquette.charger("doc/baque_images/train-labels.idx1-ubyte");
         Donnees d = new Donnees(img);
-
-        
-
-        System.out.println("Etiquettage des imagettes...");
         d.etiquetter(etiquettes);
-        //dTest.etiquetter(etiquettesNoTrain);
+
+        Imagette[] imgTest = Imagette.charger("doc/baque_images/t10k-images.idx3-ubyte");
+        Etiquette[] etiquettesTest = Etiquette.charger("doc/baque_images/t10k-labels.idx1-ubyte");
+        Donnees dTest = new Donnees(imgTest);
+        dTest.etiquetter(etiquettesTest);
+
         int tailleInput = img[0].getNiveauGris().length * img[0].getNiveauGris()[0].length;
 
-        MLP mlp = new MLP(new int[]{tailleInput, 128, 64, 10}, 0.03, new Sigmoide());
-        double erreurMoy = 0;
+        //Couches du reseaux
+        ArrayList<Integer> couches = new ArrayList<Integer>();
+        couches.add(128);
+        couches.add(64);
+        //couches.add(30);
+
+        double learning = 0.03;
+
+        MLP mlp = new MLP(new int[]{tailleInput, couches.get(0), couches.get(1), 10}, learning, new Sigmoide());
+        String transfertF = mlp.fTransferFunction instanceof Sigmoide ? "sigmoide" : "tanH";
+
+        double erreurMoyEntrainement = 0;
+        //Test a vide
         ArrayList<Double> erreurs = new ArrayList<>();
+        ArrayList<Double> stats = new ArrayList<>();
         for (Imagette imagette : img) {
             double[] entrees = applatissement(imagette.getNiveauGris());
             double[] sortieVoulu = new double[10];
@@ -33,13 +46,14 @@ public class MainKNN {
                 error += Math.abs(nSortie[i] - sortieVoulu[i]);
             }
             error = error / sortieVoulu.length;
-            erreurMoy += error;
+            erreurMoyEntrainement += error;
         }
-        erreurMoy = erreurMoy / img.length;
-        erreurs.add(erreurMoy);
+        erreurMoyEntrainement = erreurMoyEntrainement / img.length;
+        stats.add(StatsRN.testerReseauNeurone(mlp));
+        erreurs.add(erreurMoyEntrainement);
 
         for (int j = 0; j < 3; j++) {
-            double erreurMoyEntrainement = 0;
+            erreurMoyEntrainement = 0;
             for (int i = 0; i < 5; i++) {
                 System.out.println("It en cour : " + i);
                 for (Imagette imagette : img) {
@@ -51,9 +65,13 @@ public class MainKNN {
             }
             erreurMoyEntrainement = erreurMoyEntrainement / (img.length * 5);
             erreurs.add(erreurMoyEntrainement);
+            stats.add(StatsRN.testerReseauNeurone(mlp));
         }
-        Courbe.genererGraphique(new int[]{0,5,10,15},new double[]{erreurs.get(0),erreurs.get(1),erreurs.get(2),erreurs.get(3)},"erreur_128_64_0.03_sig");
-        mlp.sauve("doc/res/128_64_0.03_sig");
+
+        //generation des courbes
+        Courbe.genererGraphiqueStats(new int[]{0, 5, 10, 15}, new double[]{stats.get(0), stats.get(1), stats.get(2), stats.get(3)}, "stats_"+couches.get(0)+"_"+couches.get(1)+"_"+learning+"_"+transfertF);
+        Courbe.genererGraphique(new int[]{0, 5, 10, 15}, new double[]{erreurs.get(0), erreurs.get(1), erreurs.get(2), erreurs.get(3)}, "erreur_"+couches.get(0)+"_"+couches.get(1)+"_"+learning+"_"+transfertF);
+        mlp.sauve("doc/res/"+couches.get(0)+"_"+couches.get(1)+"_"+learning+"_"+transfertF);
     }
 
     public static double[] applatissement(double[][] tab) {
