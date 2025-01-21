@@ -20,13 +20,19 @@ public class MainKNN {
 
         //Couches du reseaux
         ArrayList<Integer> couches = new ArrayList<Integer>();
+        //entrées
+        couches.add(tailleInput);
+        //couches cachées
         couches.add(128);
         couches.add(64);
-        //couches.add(30);
+        couches.add(30);
+        //sortie
+        couches.add(10);
 
+        int[] couchesTab = couches.stream().mapToInt(i -> i).toArray();
         double learning = 0.03;
 
-        MLP mlp = new MLP(new int[]{tailleInput, couches.get(0), couches.get(1), 10}, learning, new Sigmoide());
+        MLP mlp = new MLP(couchesTab, learning, new Sigmoide());
         String transfertF = mlp.fTransferFunction instanceof Sigmoide ? "sigmoide" : "tanH";
 
         double erreurMoyEntrainement = 0;
@@ -50,24 +56,25 @@ public class MainKNN {
             erreurMoyEntrainement += error;
         }
         erreurMoyEntrainement = erreurMoyEntrainement / img.length;
-        stats.add(StatsRN.testerReseauNeurone(mlp));
+        stats.add(StatsRN.testerReseauNeurone(mlp,imgTest));
         erreurs.add(erreurMoyEntrainement);
         it.add(0);
 
-        int countIt = 1;
+        int countIt = 0;
         for (int j = 0; j < 3; j++) {
-            erreurMoyEntrainement = 0;
             for (int i = 0; i < 5; i++) {
-                System.out.println("It en cour : " + i);
+                erreurMoyEntrainement = 0;
+                System.out.println("It en cour : " + countIt);
                 for (Imagette imagette : img) {
                     double[] entrees = applatissement(imagette.getNiveauGris());
                     double[] sortieVoulu = new double[10];
                     sortieVoulu[imagette.getEtiquette().getEtiquette()] = 1.0;
-                    erreurs.add(mlp.backPropagate(entrees, sortieVoulu));
-                    stats.add(StatsRN.testerReseauNeurone(mlp));
-                    countIt += 1;
-                    it.add(countIt);
+                    erreurMoyEntrainement += mlp.backPropagate(entrees, sortieVoulu);
                 }
+                countIt += 1;
+                it.add(countIt);
+                stats.add(StatsRN.testerReseauNeurone(mlp,imgTest));
+                erreurs.add(erreurMoyEntrainement/img.length);
             }
         }
 
@@ -75,10 +82,14 @@ public class MainKNN {
         double[] errors = erreurs.stream().mapToDouble(i -> i).toArray();
         double[] reussites = stats.stream().mapToDouble(i -> i).toArray();
 
+        String nFichierCouche = "";
         //generation des courbes
-        Courbe.genererGraphiqueStats(x, reussites, "stats_"+couches.get(0)+"_"+couches.get(1)+"_"+learning+"_"+transfertF);
-        Courbe.genererGraphique(x, errors, "erreur_"+couches.get(0)+"_"+couches.get(1)+"_"+learning+"_"+transfertF);
-        mlp.sauve("doc/res/"+couches.get(0)+"_"+couches.get(1)+"_"+learning+"_"+transfertF);
+        for (int i=1; i<couches.size()-1;i++){
+            nFichierCouche += couches.get(i)+"_";
+        }
+        Courbe.genererGraphiqueStats(x, reussites, "stats_"+nFichierCouche+learning+"_"+transfertF);
+        Courbe.genererGraphique(x, errors, "erreur_"+nFichierCouche+learning+"_"+transfertF);
+        mlp.sauve("doc/res/"+nFichierCouche+learning+"_"+transfertF);
     }
 
     public static double[] applatissement(double[][] tab) {
