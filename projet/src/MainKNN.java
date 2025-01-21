@@ -33,6 +33,7 @@ public class MainKNN {
         //Test a vide
         ArrayList<Double> erreurs = new ArrayList<>();
         ArrayList<Double> stats = new ArrayList<>();
+        ArrayList<Integer> it = new ArrayList<>();
         for (Imagette imagette : img) {
             double[] entrees = applatissement(imagette.getNiveauGris());
             double[] sortieVoulu = new double[10];
@@ -51,7 +52,9 @@ public class MainKNN {
         erreurMoyEntrainement = erreurMoyEntrainement / img.length;
         stats.add(StatsRN.testerReseauNeurone(mlp));
         erreurs.add(erreurMoyEntrainement);
+        it.add(0);
 
+        int countIt = 1;
         for (int j = 0; j < 3; j++) {
             erreurMoyEntrainement = 0;
             for (int i = 0; i < 5; i++) {
@@ -60,17 +63,21 @@ public class MainKNN {
                     double[] entrees = applatissement(imagette.getNiveauGris());
                     double[] sortieVoulu = new double[10];
                     sortieVoulu[imagette.getEtiquette().getEtiquette()] = 1.0;
-                    erreurMoyEntrainement += mlp.backPropagate(entrees, sortieVoulu);
+                    erreurs.add(mlp.backPropagate(entrees, sortieVoulu));
+                    stats.add(StatsRN.testerReseauNeurone(mlp));
+                    countIt += 1;
+                    it.add(countIt);
                 }
             }
-            erreurMoyEntrainement = erreurMoyEntrainement / (img.length * 5);
-            erreurs.add(erreurMoyEntrainement);
-            stats.add(StatsRN.testerReseauNeurone(mlp));
         }
 
+        int[] x = it.stream().mapToInt(i -> i).toArray();
+        double[] errors = erreurs.stream().mapToDouble(i -> i).toArray();
+        double[] reussites = stats.stream().mapToDouble(i -> i).toArray();
+
         //generation des courbes
-        Courbe.genererGraphiqueStats(new int[]{0, 5, 10, 15}, new double[]{stats.get(0), stats.get(1), stats.get(2), stats.get(3)}, "stats_"+couches.get(0)+"_"+couches.get(1)+"_"+learning+"_"+transfertF);
-        Courbe.genererGraphique(new int[]{0, 5, 10, 15}, new double[]{erreurs.get(0), erreurs.get(1), erreurs.get(2), erreurs.get(3)}, "erreur_"+couches.get(0)+"_"+couches.get(1)+"_"+learning+"_"+transfertF);
+        Courbe.genererGraphiqueStats(x, reussites, "stats_"+couches.get(0)+"_"+couches.get(1)+"_"+learning+"_"+transfertF);
+        Courbe.genererGraphique(x, errors, "erreur_"+couches.get(0)+"_"+couches.get(1)+"_"+learning+"_"+transfertF);
         mlp.sauve("doc/res/"+couches.get(0)+"_"+couches.get(1)+"_"+learning+"_"+transfertF);
     }
 
