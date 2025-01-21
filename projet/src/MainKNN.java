@@ -23,9 +23,8 @@ public class MainKNN {
         //entrées
         couches.add(tailleInput);
         //couches cachées
-        couches.add(128);
-        couches.add(64);
-        couches.add(30);
+        couches.add(164);
+        couches.add(20);
         //sortie
         couches.add(10);
 
@@ -61,7 +60,7 @@ public class MainKNN {
         it.add(0);
 
         int countIt = 0;
-        for (int j = 0; j < 3; j++) {
+        for (int j = 0; j < 4 ; j++) {
             for (int i = 0; i < 5; i++) {
                 erreurMoyEntrainement = 0;
                 System.out.println("It en cour : " + countIt);
