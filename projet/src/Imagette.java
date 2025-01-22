@@ -84,7 +84,7 @@ public class Imagette {
         return getColorIntFromRGB(i, i, i);
     }
     public static Imagette[] melanger(Imagette[] tab){
-        List<Imagette> list = Arrays.stream(tab).toList();
+        List<Imagette> list = new ArrayList<>(Arrays.stream(tab).toList());
         Collections.shuffle(list);
         Imagette[] res = new Imagette[list.size()];
         for(int i = 0; i < res.length; i++){
