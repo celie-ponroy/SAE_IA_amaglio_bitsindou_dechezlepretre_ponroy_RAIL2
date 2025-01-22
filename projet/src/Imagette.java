@@ -2,6 +2,9 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class Imagette {
     private int type;
@@ -79,5 +82,14 @@ public class Imagette {
 
     public static int getColorGrayIntFromRGB(int i){
         return getColorIntFromRGB(i, i, i);
+    }
+    public static Imagette[] melanger(Imagette[] tab){
+        List<Imagette> list = Arrays.stream(tab).toList();
+        Collections.shuffle(list);
+        Imagette[] res = new Imagette[list.size()];
+        for(int i = 0; i < res.length; i++){
+            res[i] = list.get(i);
+        }
+        return res;
     }
 }
