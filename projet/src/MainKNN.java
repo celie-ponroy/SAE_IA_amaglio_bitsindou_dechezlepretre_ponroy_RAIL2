@@ -31,6 +31,10 @@ public class MainKNN {
         int[] couchesTab = couches.stream().mapToInt(i -> i).toArray();
         double learning = 0.03;
 
+        //suffle
+        img = Imagette.melanger(img);
+        imgTest = Imagette.melanger(imgTest);
+
         MLP mlp = new MLP(couchesTab, learning, new Sigmoide());
         String transfertF = mlp.fTransferFunction instanceof Sigmoide ? "sigmoide" : "tanH";
 
