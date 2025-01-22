@@ -6,13 +6,13 @@ import java.util.List;
 public class MainKNN {
     public static void main(String[] args) throws IOException {
         System.out.println("Chargement des données...");
-        Imagette[] img = Imagette.charger("doc/baque_images/train-images.idx3-ubyte");
-        Etiquette[] etiquettes = Etiquette.charger("doc/baque_images/train-labels.idx1-ubyte");
+        Imagette[] img = Imagette.charger("doc/baque_images_fripes/train-images.idx3-ubyte");
+        Etiquette[] etiquettes = Etiquette.charger("doc/baque_images_fripes/train-labels.idx1-ubyte");
         Donnees d = new Donnees(img);
         d.etiquetter(etiquettes);
 
-        Imagette[] imgTest = Imagette.charger("doc/baque_images/t10k-images.idx3-ubyte");
-        Etiquette[] etiquettesTest = Etiquette.charger("doc/baque_images/t10k-labels.idx1-ubyte");
+        Imagette[] imgTest = Imagette.charger("doc/baque_images_fripes/t10k-images.idx3-ubyte");
+        Etiquette[] etiquettesTest = Etiquette.charger("doc/baque_images_fripes/t10k-labels.idx1-ubyte");
         Donnees dTest = new Donnees(imgTest);
         dTest.etiquetter(etiquettesTest);
 
@@ -23,8 +23,8 @@ public class MainKNN {
         //entrées
         couches.add(tailleInput);
         //couches cachées
-        couches.add(164);
-        couches.add(20);
+        //couches.add(50);
+        //couches.add(64);
         //sortie
         couches.add(10);
 
