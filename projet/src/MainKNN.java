@@ -86,8 +86,8 @@ public class MainKNN {
         for (int i=1; i<couches.size()-1;i++){
             nFichierCouche += couches.get(i)+"_";
         }
-        Courbe.genererGraphiqueStats(x, reussites, "stats_"+nFichierCouche+learning+"_"+transfertF);
-        Courbe.genererGraphique(x, errors, "erreur_"+nFichierCouche+learning+"_"+transfertF);
+        Courbe.genererGraphiqueAvecInfos(x, reussites, "stats_"+nFichierCouche+learning+"_"+transfertF, learning, couchesTab, "courbe");
+        Courbe.genererGraphique(x, errors, "erreur_"+nFichierCouche+learning+"_"+transfertF, learning, couchesTab, "courbe");
         mlp.sauve("doc/res/"+nFichierCouche+learning+"_"+transfertF);
     }
 
