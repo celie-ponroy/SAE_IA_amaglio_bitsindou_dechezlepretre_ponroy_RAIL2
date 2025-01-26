@@ -36,9 +36,9 @@ public class Courbe {
 
         // Sauvegarde du graphique dans un fichier PNG
         try {
-            File imageFile = new File("doc/courbesFripes/" + name + ".png");
+            File imageFile = new File("doc/courbesNombres/erreur_inf_2/" + name + ".png");
             ChartUtils.saveChartAsPNG(imageFile, chart, 800, 600);
-            System.out.println("Graphique sauvegardé sous 'doc/courbesFripes/\"" + name + "\".png'");
+            System.out.println("Graphique sauvegardé sous 'doc/courbesNombres/\"" + name + "\".png'");
         } catch (IOException e) {
             System.err.println("Erreur lors de la sauvegarde du graphique : " + e.getMessage());
         }
@@ -70,9 +70,9 @@ public class Courbe {
 
         // Sauvegarde du graphique dans un fichier PNG
         try {
-            File imageFile = new File("doc/courbesFripes/" + name + ".png");
+            File imageFile = new File("doc/courbesNombres/erreur_inf_2/" + name + ".png");
             ChartUtils.saveChartAsPNG(imageFile, chart, 800, 600);
-            System.out.println("Graphique sauvegardé sous 'doc/courbesFripes/\"" + name + "\".png'");
+            System.out.println("Graphique sauvegardé sous 'doc/courbesNombres/\"" + name + "\".png'");
         } catch (IOException e) {
             System.err.println("Erreur lors de la sauvegarde du graphique : " + e.getMessage());
         }
