@@ -23,13 +23,15 @@ public class MainKNN {
         //entrées
         couches.add(tailleInput);
         //couches cachées
-        couches.add(128);
-        couches.add(64);
+        couches.add(500);
+        couches.add(300);
+        couches.add(100);
+        couches.add(50);
         //sortie
         couches.add(10);
 
         int[] couchesTab = couches.stream().mapToInt(i -> i).toArray();
-        double learning = 0.03;
+        double learning = 0.1;
 
         //suffle
         img = Imagette.melanger(img);
@@ -64,7 +66,7 @@ public class MainKNN {
         it.add(0);
 
         int countIt = 0;
-        while (stats.get(countIt) < 98) {
+        while (stats.get(countIt) < 98 && countIt < 70) {
             erreurMoyEntrainement = 0;
             System.out.println("It en cour : " + countIt);
             for (Imagette imagette : img) {
@@ -88,8 +90,8 @@ public class MainKNN {
         for (int i=1; i<couches.size()-1;i++){
             nFichierCouche += couches.get(i)+"_";
         }
-        Courbe.genererGraphiqueStats(x, reussites, "stats_"+nFichierCouche+learning+"_"+transfertF);
-        Courbe.genererGraphique(x, errors, "erreur_"+nFichierCouche+learning+"_"+transfertF);
+        Courbe.genererGraphiqueAvecInfos(x, reussites, "stats_"+nFichierCouche+learning+"_"+transfertF, learning, couchesTab, "courbes_MLP_VS_KNN");
+        Courbe.genererGraphique(x, errors, "erreur_"+nFichierCouche+learning+"_"+transfertF, learning, couchesTab, "courbes_MLP_VS_KNN");
         mlp.sauve("doc/res/"+nFichierCouche+learning+"_"+transfertF);
     }
 
