@@ -23,10 +23,8 @@ public class MainKNN {
         //entrées
         couches.add(tailleInput);
         //couches cachées
-        couches.add(500);
-        couches.add(300);
-        couches.add(100);
-        couches.add(50);
+        couches.add(10);
+        couches.add(10);
         //sortie
         couches.add(10);
 
@@ -37,7 +35,7 @@ public class MainKNN {
         img = Imagette.melanger(img);
         imgTest = Imagette.melanger(imgTest);
 
-        MLP mlp = new MLP(couchesTab, learning, new Sigmoide());
+        MLP mlp = new MLP(couchesTab, learning, new TanH());
         String transfertF = mlp.fTransferFunction instanceof Sigmoide ? "sigmoide" : "tanH";
 
         double erreurMoyEntrainement = 0;
@@ -66,7 +64,7 @@ public class MainKNN {
         it.add(0);
 
         int countIt = 0;
-        while (stats.get(countIt) < 98 && countIt < 70) {
+        while (stats.get(countIt) < 99 && countIt < 500) {
             erreurMoyEntrainement = 0;
             System.out.println("It en cour : " + countIt);
             for (Imagette imagette : img) {
