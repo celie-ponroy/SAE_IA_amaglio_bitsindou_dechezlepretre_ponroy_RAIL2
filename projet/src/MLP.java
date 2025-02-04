@@ -1,4 +1,6 @@
-public class MLP {
+import java.io.*;
+
+public class MLP implements Serializable {
     protected double fLearningRate = 0.6;
     protected Layer[] fLayers;
     protected TransferFunction fTransferFunction;
@@ -60,6 +62,7 @@ public class MLP {
         }
         return output;
     }
+
 
     /**
      * Rétropropagation
@@ -146,5 +149,43 @@ public class MLP {
      */
     public int getOutputLayerSize() {
         return fLayers[fLayers.length - 1].Length;
+    }
+
+    public void sauve(String nomf) {
+        try {
+            // cree un flux de sortie ( fichier puis flux d ’ objet )
+            FileOutputStream os = new FileOutputStream(nomf);
+            ObjectOutputStream oos = new ObjectOutputStream(os);
+            // ecrit l ’ objet
+            oos.writeObject(this);
+            // referme le flux
+            oos.close();
+        } catch (IOException e) {
+            System.out.println(" erreur d ’E / S ");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println(" erreur hors E / S ");
+            e.printStackTrace();
+        }
+    }
+
+    public static MLP charge(String nomf) {
+        try {
+            // creer le flux de lecture ( fichier puis flux d ’ objet )
+            FileInputStream is = new FileInputStream(nomf);
+            ObjectInputStream ois = new ObjectInputStream(is);
+            // lit l ’ objet et le cast en point
+            MLP ml = (MLP) (ois.readObject());
+            // referme le flux de lecture
+            ois.close();
+            return ml;
+        } catch (IOException e) {
+            System.out.println(" erreur d ’E / S ");
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println(" erreur hors E / S ");
+            e.printStackTrace();
+        }
+        return null;
     }
 }
