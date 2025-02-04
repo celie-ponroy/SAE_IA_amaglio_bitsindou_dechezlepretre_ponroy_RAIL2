@@ -4,38 +4,48 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
+import org.jfree.chart.title.TextTitle;
 
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Classe permettant de générer des graphiques à partir de données
+ */
+
 public class Courbe {
 
     /**
-     * Génère un graphique à partir des données d'erreurs
-     * @param it les itérations
-     * @param errors les erreurs
-     * @param name le nom du graphique
+     * Génère un graphique à partir des données fournies.
+     * @param it le nombre d'itérations
+     * @param values les valeurs à afficher
+     * @param name Nom du fichier de sortie
+     * @param learningRate le pas d'apprentissage
+     * @param nbNeurones la structure du réseau
+     * @param dossierArrivee le dossier de destination
+     * @param titre Titre du graphique
+     * @param labelY Légende de l'axe Y
      */
-    public static void genererGraphique(int[] it, double[] errors, String name,
+    public static void genererGraphique(int[] it, double[] values, String name,
                                         double learningRate, int[] nbNeurones,
-                                        String dossierArrivee) {
+                                        String dossierArrivee, String titre, String labelY) {
 
-        // Vérification du tableau de neurones
+        if (it.length != values.length) {
+            throw new IllegalArgumentException("Les tableaux 'it' et 'values' doivent avoir la même longueur.");
+        }
         if (nbNeurones.length < 2) {
             throw new IllegalArgumentException("Le tableau 'nbNeurones' doit contenir au moins deux éléments (entrées et sorties).");
         }
 
-        // Création des séries de données
-        XYSeries errorSeries = new XYSeries("Erreur de sortie");
+        XYSeries series = new XYSeries(labelY);
         for (int i = 0; i < it.length; i++) {
-            errorSeries.add(it[i], errors[i]);
+            series.add(it[i], values[i]);
         }
 
-        // Collection de séries pour le graphique
         XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(errorSeries);
+        dataset.addSeries(series);
 
-        // Construction de la description des paramètres
+        // détails des paramètres
         StringBuilder details = new StringBuilder();
         details.append("Taux d'apprentissage: ").append(learningRate).append("\n")
                 .append("Structure du réseau: ");
@@ -44,107 +54,63 @@ public class Courbe {
             if (i < nbNeurones.length - 1) details.append(" -> ");
         }
 
+        // Calcul du point de convergence
+        double seuilConvergence = 0.1;
+        int convergenceIteration = trouverPointDeConvergence(values, seuilConvergence);
+        details.append("\nPoint de convergence: ");
+        if (convergenceIteration > 0) {
+            details.append(convergenceIteration).append(" itérations (seuil: ").append(seuilConvergence).append(")");
+        } else {
+            details.append("non atteint (seuil: ").append(seuilConvergence).append(")");
+        }
+
+        // Valeur finale (réussite ou erreur)
+        double valeurFinale = values[values.length - 1];
+        details.append("\nValeur finale (").append(labelY).append(") : ")
+                .append(String.format("%.4f", valeurFinale));
+
         // Création du graphique
         JFreeChart chart = ChartFactory.createXYLineChart(
-                "Erreur de sortie en fonction des itérations", // Titre du graphique
-                "Itérations",                    // Label de l'axe X
-                "Erreur",                        // Label de l'axe Y
-                dataset,                         // Données
-                PlotOrientation.VERTICAL,        // Orientation
-                true,                            // Légende
-                true,                            // Info bulle
-                false                            // URL
+                titre,
+                "Itérations",
+                labelY,
+                dataset,
+                PlotOrientation.VERTICAL,
+                true,
+                true,
+                false
         );
 
-        // Ajout des informations dans le sous-titre
-        chart.addSubtitle(new org.jfree.chart.title.TextTitle(details.toString()));
+        chart.addSubtitle(new TextTitle(details.toString()));
 
-
-
-        // Sauvegarde du graphique dans un fichier PNG
         try {
-            // Créer le dossier s'il n'existe pas
             File dossier = new File("doc/" + dossierArrivee);
             if (!dossier.exists()) {
                 dossier.mkdirs();
             }
 
-            File imageFile = new File("doc/"+ dossierArrivee+"/" + name + ".png");
+            File imageFile = new File(dossier, name + ".png");
             ChartUtils.saveChartAsPNG(imageFile, chart, 800, 600);
-            System.out.println("Graphique sauvegardé sous 'doc/"+ dossierArrivee+"/" + name + ".png'");
+            System.out.println("Graphique sauvegardé sous '" + imageFile.getPath() + "'");
+
         } catch (IOException e) {
             System.err.println("Erreur lors de la sauvegarde du graphique : " + e.getMessage());
+            throw new RuntimeException("Échec de la sauvegarde du graphique", e);
         }
     }
 
     /**
-     * Génère un graphique à partir des données d'erreurs avec des informations sur la structure du réseau
-     *
-     * @param it           les itérations
-     * @param errors       les erreurs
-     * @param name         le nom du graphique
-     * @param learningRate le taux d'apprentissage
-     * @param nbNeurones   tableau contenant la structure du réseau (ex : {2, 4, 2})
-     * @param dossierArrivee   le chemin où sauvegarder le graphique
+     * Permet de trouver le point de convergence d'une série de valeurs.
+     * @param values la série de valeurs
+     * @param seuil le seuil de convergence
+     * @return le nombre d'itérations avant de converger
      */
-    public static void genererGraphiqueAvecInfos(int[] it, double[] errors, String name,
-                                                 double learningRate, int[] nbNeurones,
-                                                 String dossierArrivee) {
-
-        // Vérification du tableau de neurones
-        if (nbNeurones.length < 2) {
-            throw new IllegalArgumentException("Le tableau 'nbNeurones' doit contenir au moins deux éléments (entrées et sorties).");
-        }
-
-        // Création des séries de données
-        XYSeries errorSeries = new XYSeries("Erreur de sortie");
-        for (int i = 0; i < it.length; i++) {
-            errorSeries.add(it[i], errors[i]);
-        }
-
-        // Collection de séries pour le graphique
-        XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(errorSeries);
-
-        // Construction de la description des paramètres
-        StringBuilder details = new StringBuilder();
-        details.append("Taux d'apprentissage: ").append(learningRate).append("\n")
-                .append("Structure du réseau: ");
-        for (int i = 0; i < nbNeurones.length; i++) {
-            details.append(nbNeurones[i]);
-            if (i < nbNeurones.length - 1) details.append(" -> ");
-        }
-
-        // Création du graphique
-        JFreeChart chart = ChartFactory.createXYLineChart(
-                "Pourcentage de réussite en fonction des itérations\n", // Titre principal
-                "Itérations",                                                 // Label de l'axe X
-                "Erreur",                                                     // Label de l'axe Y
-                dataset,                                                      // Données
-                PlotOrientation.VERTICAL,                                     // Orientation
-                true,                                                         // Légende
-                true,                                                         // Info bulle
-                false                                                         // URL
-        );
-
-        // Ajout des informations dans le sous-titre
-        chart.addSubtitle(new org.jfree.chart.title.TextTitle(details.toString()));
-
-        // Sauvegarde du graphique dans un fichier PNG
-        try {
-
-            // Créer le dossier s'il n'existe pas
-            File dossier = new File("doc/" + dossierArrivee);
-            if (!dossier.exists()) {
-                dossier.mkdirs();
+    private static int trouverPointDeConvergence(double[] values, double seuil) {
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] <= seuil) {
+                return i + 1;
             }
-
-            // Sauvegarder le fichier
-            File imageFile = new File(dossier, name + ".png");
-            ChartUtils.saveChartAsPNG(imageFile, chart, 800, 600);
-            System.out.println("Graphique sauvegardé sous '" + imageFile.getPath() + "'");
-        } catch (IOException e) {
-            System.err.println("Erreur lors de la sauvegarde du graphique : " + e.getMessage());
         }
+        return values.length;
     }
 }
